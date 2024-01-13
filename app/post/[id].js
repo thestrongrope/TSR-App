@@ -35,9 +35,7 @@ export default function Page() {
       />
       <Text style={styles.title}>{post.title.rendered}</Text>
       {Platform.OS == "web" && (
-        <div>
-          <div style={styles.content} dangerouslySetInnerHTML={{ __html: post.content.rendered}} />
-        </div>
+        <div style={styles.content} dangerouslySetInnerHTML={{ __html: post.content.rendered}} />
       )}
       {(Platform.OS == "android" || Platform.OS == "ios") && (
         <WebView source={{ html: post.content.rendered }} />
