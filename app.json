@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "TSR",
-    "slug": "TSR",
+    "slug": "tsr",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -41,8 +41,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "bcb3c70a-b6e1-43d9-aaf0-b027bc68fd7a"
+        "projectId": "429ecd7d-9d37-468f-9c7c-efb50b481660"
       }
-    }
+    },
+    "owner": "tech.thestrongrope"
   }
 }
