@@ -11,7 +11,6 @@ export default function Page() {
 
   useEffect(() => {
     getPost(id);
-    console.log(post);
   }, []);
 
   if (post?.id != id)
