@@ -1,6 +1,5 @@
-import { StyleSheet, Image, Linking, TouchableOpacity, Button } from 'react-native';
-import { Text, View } from '../components/Themed';
-import usePostStore from '../store/PostStore';
+import { Text, View, StyleSheet, Image, Linking, TouchableOpacity, Button } from 'react-native';
+import usePostStore from '../../store/PostStore';
 import { useEffect, useState } from 'react';
 import { Link } from 'expo-router';
 
@@ -92,7 +91,8 @@ export default function HomeScreen() {
       </View>
       {categories.map((category: Category) => (
         <Link 
-          style={styles.link} key={category.id} 
+          key={category.id}
+          style={styles.link}
           href={`/category/${category.id}/1`}>{category.name}</Link>
       ))}
     </View>

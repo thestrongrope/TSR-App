@@ -54,9 +54,9 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen
-          name="index" // This is the name of the page and must match the url from root
+          name="(tabs)" // This is the name of the page and must match the url from root
           options={{
-            title: "Home",
+            headerShown: false,
           }}
         />
       </Stack>
