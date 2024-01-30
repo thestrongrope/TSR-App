@@ -6,7 +6,6 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
-import { Drawer } from "expo-router/drawer";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 
@@ -51,7 +50,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen
           name="(tabs)" // This is the name of the page and must match the url from root

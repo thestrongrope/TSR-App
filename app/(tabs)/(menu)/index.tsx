@@ -1,16 +1,9 @@
 import { Stack } from 'expo-router';
 import { Text, View, StyleSheet } from 'react-native';
 
-export default function SearchScreen() {
+export default function MenuScreen() {
     return (
         <>
-        <Stack.Screen
-            name="search"
-            options={{
-            title: "Search",
-            headerShown: false,
-            }}
-        />
         <View style={styles.container}>
             <Text style={styles.title}>Search</Text>
         </View>
@@ -31,7 +24,6 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: 'bold',
       marginVertical: 10,
-      color: 'white'
     },
     categoryTitle: {
       backgroundColor: 'red',
@@ -44,7 +36,6 @@ const styles = StyleSheet.create({
     categoryTitleText: {
       fontSize: 20,
       fontWeight: 'bold',
-      color: 'white',
     },
     youTubeImage: {
       width: "100%", // Full width

@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Image, Linking, TouchableOpacity, Button } from 'react-native';
-import usePostStore from '../../store/PostStore';
+import usePostStore from '../../../store/PostStore';
 import { useEffect, useState } from 'react';
 import { Link } from 'expo-router';
 
@@ -76,6 +76,7 @@ export default function HomeScreen() {
       <View>
         {videos && videos.map((video) => (
           <TouchableOpacity
+            key={video.id}
             onPress={() => Linking.openURL(`https://www.youtube.com/v/${video.id}`)}>
           <View            
             key={video.id}>
@@ -90,7 +91,7 @@ export default function HomeScreen() {
         <Text style={styles.categoryTitleText}>Categories</Text>
       </View>
       {categories.map((category: Category) => (
-        <Link 
+        <Link
           key={category.id}
           style={styles.link}
           href={`/category/${category.id}/1`}>{category.name}</Link>
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 10,
-    color: 'white'
   },
   categoryTitle: {
     backgroundColor: 'red',
@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
   },
   categoryTitleText: {
     fontSize: 20,
-    fontWeight: 'bold',
     color: 'white',
+    fontWeight: 'bold',
   },
   youTubeImage: {
     width: "100%", // Full width

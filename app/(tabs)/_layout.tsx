@@ -17,43 +17,31 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
       }}>
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="(search)"
         options={{
           title: 'Search',
           tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="about"
+        name="(about)"
         options={{
           title: 'About',
           tabBarIcon: ({ color }) => <TabBarIcon name="info" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="menu"
+        name="(menu)"
         options={{
           title: 'Menu',
           tabBarIcon: ({ color }) => <TabBarIcon name="bars" color={color} />,

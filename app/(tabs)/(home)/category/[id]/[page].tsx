@@ -1,28 +1,38 @@
 import { useLocalSearchParams, Link, Stack } from "expo-router";
 
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import usePostStore from "../../../store/PostStore";
-import { useEffect } from "react";
+import { View, Text, StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import usePostStore from "../../../../../store/PostStore";
+import { useEffect, useState } from "react";
 
-export default function Page() {
-  const { id, page } = useLocalSearchParams();
+interface Post {
+  id: number;
+  title: {
+    rendered: string;
+  };
+}
+
+export default function CategoryScreen() {
+  const params = useLocalSearchParams<{id: string, page: string}>();
+  const { id, page } = params;
+  const [idVal, setIdVal] = useState<number>(parseInt(id, 10));
+  const [pg, setPg] = useState(parseInt(page, 10));
 
   const {
     getCategory,
     getPosts,
     currentCategory,
-    currentPage,
     posts,
     totalPages,
     totalPosts,
   } = usePostStore();
-
+  
   useEffect(() => {
-    getCategory(id);
-    getPosts(id, page);
-  }, []);
+    getCategory(idVal);
+    console.log(`Id: ${id}, Page: ${page}, PgNo: ${pg}`);
+    getPosts(idVal, pg);
+  }, [idVal, pg]);
 
-  if (currentCategory?.id != id)
+  if (currentCategory?.id != idVal)
     return (
       <View>
         <Stack.Screen
@@ -44,37 +54,35 @@ export default function Page() {
 
       <Text style={styles.title}>
         {currentCategory.name}
-        (Page: {currentPage} of {totalPages}, Total {totalPosts})
+        (Page: {pg} of {totalPages}, Total {totalPosts})
       </Text>
 
       {posts.length == 0 && <Text style={styles.link}>No posts found</Text>}
 
       {posts.length > 0 && (
         <>
-          {posts.map((post) => (
-            <Link style={styles.link} href={`post/${post.id}`} key={post.id}>
+          {posts.map((post : Post) => (
+            <Link style={styles.link} href={`/post/${post.id}`} key={post.id}>
               {post.title.rendered}
             </Link>
           ))}
 
-          {page > 1 && (
+          {pg > 1 && (
             <Link
               style={styles.button}
-              href={`category/${id}/${currentPage - 1}`}
-            >
+              href={`/category/${id}/${pg - 1}`}>
               <Pressable>
                 <Text>Previous</Text>
               </Pressable>
             </Link>
           )}
-          {page < totalPages && (
+          {pg < totalPages && (
             <Link
               style={styles.button}
-              href={`category/${id}/${currentPage + 1}`}
-            >
-              <Pressable>
+              href={`/category/${id}/${pg + 1}`}>
+              <TouchableOpacity>
                 <Text>Next</Text>
-              </Pressable>
+              </TouchableOpacity>
             </Link>
           )}
         </>
@@ -92,12 +100,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "white",
   },
   link: {
     fontSize: 20,
     marginVertical: 10,
-    color: "white",
   },
   separator: {
     marginVertical: 30,
@@ -108,8 +114,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginVertical: 10,
-    color: "white",
     backgroundColor: "blue",
+    color: "white",
     padding: 10,
     borderRadius: 5,
   },
