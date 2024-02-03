@@ -14,6 +14,9 @@ interface Post {
   title: {
     rendered: string;
   };
+  content: {
+    rendered: string;
+  };
 };
 
 interface PostCache {
@@ -54,7 +57,7 @@ const usePostStore = create<PostStore>((set, get) => ({
   currentPage: 0,
   totalPages: 0,
   totalPosts: 0,
-  post: {id: 0, title: {rendered: ""}},
+  post: {id: 0, title: {rendered: ""}, content: {rendered: ""}},
 
   getCategory: async (categoryId:number):Promise<Category> => {
     if(categoryId == 0) return {id: 0, name: "", count: 0};
@@ -112,7 +115,7 @@ const usePostStore = create<PostStore>((set, get) => ({
   },
 
   getPost: async (postId) : Promise<Post> => {
-    if(postId == 0) return {id: 0, title: {rendered: ""}};
+    if(postId == 0) return {id: 0, title: {rendered: ""}, content: {rendered: ""}};
     const state = get();
 
     const categoryIds : number[] = Object.keys(state.cache).map(x => parseInt(x, 10));

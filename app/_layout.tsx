@@ -50,7 +50,6 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen
           name="(tabs)" // This is the name of the page and must match the url from root
@@ -59,6 +58,5 @@ function RootLayoutNav() {
           }}
         />
       </Stack>
-    </ThemeProvider>
   );
 }

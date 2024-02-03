@@ -28,7 +28,6 @@ export default function CategoryScreen() {
   
   useEffect(() => {
     getCategory(idVal);
-    console.log(`Id: ${id}, Page: ${page}, PgNo: ${pg}`);
     getPosts(idVal, pg);
   }, [idVal, pg]);
 
