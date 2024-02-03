@@ -2,6 +2,7 @@ import { create } from 'zustand'
 
 const categoriesUrl = "https://www.thestrongrope.com/wp-json/wp/v2/categories";
 const postsUrl = "https://www.thestrongrope.com/wp-json/wp/v2/posts?categories=";
+const searchUrl = "https://www.thestrongrope.com/wp-json/wp/v2/posts?search=";
 
 interface Category {
   id: number;
@@ -41,10 +42,12 @@ interface PostStore {
   currentPage: number;
   totalPages: number;
   totalPosts: number;
+  loading: boolean;
   post: Post;
   getCategory: (categoryId:number) => Promise<Category>;
   getCategories: () => Promise<Category[]>;
   getPosts: (categoryId:number, pageNo:number) => Promise<Post[]>;
+  searchPosts: (searchTerm:string, pageNo:number) => Promise<Post[]>;
   getPost: (postId:number) => Promise<Post>;
 };
 
@@ -57,6 +60,7 @@ const usePostStore = create<PostStore>((set, get) => ({
   currentPage: 0,
   totalPages: 0,
   totalPosts: 0,
+  loading: false,
   post: {id: 0, title: {rendered: ""}, content: {rendered: ""}},
 
   getCategory: async (categoryId:number):Promise<Category> => {
@@ -70,9 +74,13 @@ const usePostStore = create<PostStore>((set, get) => ({
     }
 
     if(state.currentCategory.id == categoryId) return state.currentCategory;
+
+    state.loading = true;
     const response = await fetch(`https://www.thestrongrope.com/wp-json/wp/v2/categories/${categoryId}`);
     const category:Category = await response.json();
     category.name = category.name.replace("&amp;", "&");
+    state.loading = false;
+
     set({currentCategory: category});
     return category;
   },
@@ -80,6 +88,7 @@ const usePostStore = create<PostStore>((set, get) => ({
   getCategories: async () => {
     const state = get();
     if(state.categories.length > 0) return state.categories;
+    state.loading = true;
     const response = await fetch(categoriesUrl);
     const categories:Category[] = await response.json();
     categories.forEach(element => {
@@ -89,6 +98,7 @@ const usePostStore = create<PostStore>((set, get) => ({
         }
     });
     const filteredCategories = categories.filter(x => x.count > 0);
+    state.loading = false;
     set({ categories: filteredCategories });
     return filteredCategories;
   },
@@ -100,17 +110,38 @@ const usePostStore = create<PostStore>((set, get) => ({
       return state.cache[categoryId][pg];
     }
     const url = `${postsUrl}${categoryId}&page=${pg}`;
+    state.loading = true;
     const response = await fetch(url);
     const wpTotalPages = parseInt(response.headers.get('X-WP-TotalPages') ?? '0', 10);
-    set({ totalPages: wpTotalPages} );
     const wpTotalPosts = parseInt(response.headers.get('X-WP-Total') ?? '0', 10);
-    set({ totalPosts: wpTotalPosts});
     const data = await response.json();
+    state.loading = false;
+    set({ totalPages: wpTotalPages} );
+    set({ totalPosts: wpTotalPosts});
     if(data.length > 0) {
       set({currentPage: pg});
       set({posts: [...data]});
     }
     set({cache: {...state.cache, [categoryId]: {...state.cache[categoryId], [pg]: data}}});
+    return data;
+  },
+
+  searchPosts: async (searchTerm, pg) : Promise<Post[]> => {
+    const state = get();
+    const sanitizedSearchTerm = encodeURIComponent(searchTerm);
+    const url = `${searchUrl}${sanitizedSearchTerm}&page=${pg}`;
+    state.loading = true;
+    const response = await fetch(url);
+    const wpTotalPages = parseInt(response.headers.get('X-WP-TotalPages') ?? '0', 10);
+    const wpTotalPosts = parseInt(response.headers.get('X-WP-Total') ?? '0', 10);
+    const data = await response.json();
+    state.loading = false;
+    set({ totalPages: wpTotalPages} );
+    set({ totalPosts: wpTotalPosts});
+    if(data.length > 0) {
+      set({currentPage: pg});
+      set({posts: [...data]});
+    }
     return data;
   },
 
@@ -135,8 +166,10 @@ const usePostStore = create<PostStore>((set, get) => ({
     }
 
     if(state.post.id == postId) return state.post;
+    state.loading = true;
     const response = await fetch(`https://www.thestrongrope.com/wp-json/wp/v2/posts/${postId}`);
     const data = await response.json();
+    state.loading = false;
     set({post: data});
     return data;
   }

@@ -1,6 +1,13 @@
 import { useLocalSearchParams, Link, Stack } from "expo-router";
 
-import { View, Text, StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import usePostStore from "../../../../../store/PostStore";
 import { useEffect, useState } from "react";
 
@@ -12,7 +19,7 @@ interface Post {
 }
 
 export default function CategoryScreen() {
-  const params = useLocalSearchParams<{id: string, page: string}>();
+  const params = useLocalSearchParams<{ id: string; page: string }>();
   const { id, page } = params;
   const [idVal, setIdVal] = useState<number>(parseInt(id, 10));
   const [pg, setPg] = useState(parseInt(page, 10));
@@ -20,12 +27,13 @@ export default function CategoryScreen() {
   const {
     getCategory,
     getPosts,
+    loading,
     currentCategory,
     posts,
     totalPages,
     totalPosts,
   } = usePostStore();
-  
+
   useEffect(() => {
     getCategory(idVal);
     getPosts(idVal, pg);
@@ -33,60 +41,66 @@ export default function CategoryScreen() {
 
   if (currentCategory?.id != idVal)
     return (
-      <View>
+      <ScrollView>
         <Stack.Screen
           options={{
             title: "Loading Category...",
           }}
         />
         <Text style={styles.title}>Loading...</Text>
-      </View>
+      </ScrollView>
     );
 
   return (
-    <View>
+    <ScrollView>
       <Stack.Screen
         options={{
           title: currentCategory.name,
         }}
       />
 
-      <Text style={styles.title}>
-        {currentCategory.name}
-        (Page: {pg} of {totalPages}, Total {totalPosts})
-      </Text>
-
-      {posts.length == 0 && <Text style={styles.link}>No posts found</Text>}
-
-      {posts.length > 0 && (
+      {loading ? (
+        <Text style={styles.title}>Loading...</Text>
+      ) : (
         <>
-          {posts.map((post : Post) => (
-            <Link style={styles.link} href={`/post/${post.id}`} key={post.id}>
-              {post.title.rendered}
-            </Link>
-          ))}
+          <Text style={styles.title}>
+            {currentCategory.name}
+            (Page: {pg} of {totalPages}, Total {totalPosts})
+          </Text>
 
-          {pg > 1 && (
-            <Link
-              style={styles.button}
-              href={`/category/${id}/${pg - 1}`}>
-              <Pressable>
-                <Text>Previous</Text>
-              </Pressable>
-            </Link>
-          )}
-          {pg < totalPages && (
-            <Link
-              style={styles.button}
-              href={`/category/${id}/${pg + 1}`}>
-              <TouchableOpacity>
-                <Text>Next</Text>
-              </TouchableOpacity>
-            </Link>
+          {posts.length == 0 && <Text style={styles.link}>No posts found</Text>}
+
+          {posts.length > 0 && (
+            <>
+              {posts.map((post: Post) => (
+                <Link
+                  style={styles.link}
+                  href={`/post/${post.id}`}
+                  key={post.id}
+                >
+                  {post.title.rendered}
+                </Link>
+              ))}
+
+              {pg > 1 && (
+                <Link style={styles.button} href={`/category/${id}/${pg - 1}`}>
+                  <Pressable>
+                    <Text>Previous</Text>
+                  </Pressable>
+                </Link>
+              )}
+              {pg < totalPages && (
+                <Link style={styles.button} href={`/category/${id}/${pg + 1}`}>
+                  <TouchableOpacity>
+                    <Text>Next</Text>
+                  </TouchableOpacity>
+                </Link>
+              )}
+            </>
           )}
         </>
       )}
-    </View>
+    </ScrollView>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image, Linking, TouchableOpacity, Button } from 'react-native';
+import { Text, View, StyleSheet, Image, Linking, TouchableOpacity, Button, ScrollView } from 'react-native';
 import usePostStore from '../../../store/PostStore';
 import { useEffect, useState } from 'react';
 import { Link } from 'expo-router';
@@ -81,7 +81,7 @@ export default function HomeScreen() {
           <View            
             key={video.id}>
             <Image source={{uri: video.thumbnail}} style={styles.youTubeImage} />
-            <Text>{video.title}</Text>
+            <Text style={styles.videoTitle}>{video.title}</Text>
           </View>
           </TouchableOpacity>
         ))}
@@ -90,12 +90,14 @@ export default function HomeScreen() {
       <View style={styles.categoryTitle}>
         <Text style={styles.categoryTitleText}>Categories</Text>
       </View>
+      <ScrollView>
       {categories.map((category: Category) => (
         <Link
           key={category.id}
           style={styles.link}
           href={`/category/${category.id}/1`}>{category.name}</Link>
       ))}
+      </ScrollView>
     </View>
   );
 }
@@ -113,6 +115,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 10,
+  },
+  videoTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    textAlign: 'center',
   },
   categoryTitle: {
     backgroundColor: 'red',
