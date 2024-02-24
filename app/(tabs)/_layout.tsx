@@ -44,6 +44,7 @@ export default function TabLayout() {
         name="(menu)"
         options={{
           title: 'Menu',
+          tabBarItemStyle: { display: 'none' },
           tabBarIcon: ({ color }) => <TabBarIcon name="bars" color={color} />,
         }}
       />

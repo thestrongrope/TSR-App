@@ -5,84 +5,84 @@ import {
   Image,
   Linking,
   TouchableOpacity,
-  Button,
   ScrollView,
+  Platform,
+  useWindowDimensions,
+  requireNativeComponent,
 } from "react-native";
-import usePostStore from "../../../store/PostStore";
-import { useEffect, useState } from "react";
-import { Link } from "expo-router";
+
+import { CHANNEL_ID } from "constants/YouTube";
+import { Category, VideoItem, YouTubeApiResponseItem } from "types/types";
+import usePostStore from "store/PostStore";
+import { useEffect, useMemo, useState } from "react";
+import { router } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import HTML, { MixedStyleDeclaration } from "react-native-render-html";
+import { YOUTUBEURL } from "constants/YouTube";
 
-const API_KEY = "AIzaSyCkMS50UCV1YnB8v5VLs5KNOhF68loWBxA"; // replace with your YouTube Data API v3 API key
-const CHANNEL_ID = "UCCbzUJ8KomG2nqBEzVjcBYg"; // replace with the ID of the channel you're interested in
-const YOUTUBEURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=1&order=date&key=${API_KEY}`;
+async function GetYouTubeVideo(): Promise<VideoItem> {
+  console.log("Fetching videos from YouTube");
+  const response = await fetch(YOUTUBEURL);
+  if (response.status != 200) {
+    throw new Error(
+      `Failed to fetch videos from YouTube. URL: ${response.url}, Error: ${response.statusText}`
+    );
+  }
+  const data = await response.json();
+  if (!data.items) {
+    throw new Error(
+      `Failed to fetch videos from YouTube. URL: ${response.url}, Error: ${response.statusText}`
+    );
+  }
 
-type YouTubeApiResponseItem = {
-  id: {
-    videoId: string;
+  const item: YouTubeApiResponseItem = data.items[0];
+  return {
+    id: item.id.videoId,
+    title: item.snippet.title,
+    thumbnail: item.snippet.thumbnails.high.url,
+    description: item.snippet.description,
   };
-  snippet: {
-    publishedAt: string;
-    description: string;
-    title: string;
-    thumbnails: {
-      high: {
-        url: string;
-      };
-    };
-  };
-};
-
-type VideoItem = {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-};
-
-type Category = {
-  id: number;
-  name: string;
-  count: number;
-};
+}
 
 export default function HomeScreen() {
   const { categories, getCategories } = usePostStore();
-  const [videos, setVideos] = useState<VideoItem[]>();
+  const [video, setVideo] = useState<VideoItem>();
   const [error, setError] = useState<string>();
+  const width = useWindowDimensions().width;
 
-  useEffect(() => {
-    async function fetchVideos() {
+  useMemo(() => {
+    async function getVideo() {
       try {
-        const response = await fetch(YOUTUBEURL);
-        const data = await response.json();
-        if (!data.items) setError("No items found");
-        setVideos(
-          data.items.map((item: YouTubeApiResponseItem) => ({
-            id: item.id.videoId,
-            title: item.snippet.title,
-            thumbnail: item.snippet.thumbnails.high.url,
-            description: item.snippet.description,
-          }))
-        );
-      } catch (error) {
-        console.log(error);
-        // FCM.log(error);
-        setError("Some error occurred when fetching YouTube videos");
+        if(video) return;
+        const v = await GetYouTubeVideo();
+        setVideo(v);
+      } catch (error: any) {
+        setError(error.message);
       }
     }
+    getVideo();
+  }, []);
 
-    fetchVideos();
+  useEffect(() => {
     getCategories();
   }, []);
 
-  if (error) return <Text>{error}</Text>;
+  if (error) {
+    console.log(error);
+  }
+
+  const titleTagsStyles: Readonly<Record<string, MixedStyleDeclaration>> = {
+    h3: {
+      fontSize: 18,
+      fontWeight: "bold",
+    },
+  };
 
   return (
     <View style={styles.container}>
-      <View>
-        {videos &&
-          videos.map((video) => (
+      <ScrollView style={{ width: "100%", flex: 1, padding: 10 }}>
+        <View style={{ width: "100%" }}>
+          {video && (
             <TouchableOpacity
               key={video.id}
               onPress={() =>
@@ -96,79 +96,119 @@ export default function HomeScreen() {
                   }}
                   style={styles.youTubeImage}
                 />
-                <Text style={styles.videoTitle}>{video.title}</Text>
               </View>
             </TouchableOpacity>
-          ))}
-      </View>
+          )}
+        </View>
 
-      <View style={styles.youtubeTitle}>
-        <Text style={styles.youtubeTitleText}>
-          Watch More on our
+        <View
+          style={{
+            width: "100%",
+          }}
+        >
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(`https://www.youtube.com/channel/${CHANNEL_ID}`)
             }
-          ><Text style={styles.youtubeIconTitleText}><FontAwesome style={styles.youTubeIcon} name="youtube-play" /> YouTube</Text></TouchableOpacity>
-          Channel
-        </Text>
-      </View>
-
-      <View style={styles.categoryTitle}>
-        <Text style={styles.categoryTitleText}>Categories</Text>
-      </View>
-      <ScrollView style={{ width: "100%" }}>
-        {categories.map((category: Category) => (
-          <Link
-            key={category.id}
-            style={styles.link}
-            href={`/category/${category.id}/1`}
           >
-            <Text>{category.name}</Text>
+            <View style={styles.youtubeTitle}>
+              <Text style={styles.youtubeTitleText}>
+                Watch More on our
+                <FontAwesome style={styles.youTubeIcon} name="youtube-play" />{" "}
+                YouTube Channel
+              </Text>
+            </View>
+          </TouchableOpacity>
 
-            <Text>{category.count}</Text>
-          </Link>
-        ))}
+          <View style={styles.categoryTitle}>
+            <Text style={styles.categoryTitleText}>Categories</Text>
+          </View>
+          <View style={styles.card}>
+            {categories.map((category: Category) => (
+              <TouchableOpacity
+                key={category.id}
+                style={styles.link}
+                onPress={() => router.push(`/category/${category.id}/1`)}
+              >
+                <View style={styles.categoryContainer}>
+                  <Text style={styles.categoryName}>{category.name}</Text>
+                  <Text style={styles.categoryCount}>{category.count}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  card: {
+    width: "100%",
+    marginTop: 0,
+    backgroundColor: "white",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "lightgrey",
+  },
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "#efefef",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
   },
-  link: {
+  categoryContainer: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 10,
+    alignItems: "center",
+    width: "100%",
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgrey",
+  },
+  categoryName: {
     fontSize: 20,
     fontWeight: "bold",
-    marginVertical: 10,
-    borderStyle: "solid",
-    borderBottomWidth: 1,
-    borderBottomColor: "grey",
-    paddingLeft: 20,
+  },
+  categoryCount: {
+    fontSize: 18,
+    color: "grey",
+    fontWeight: "bold",
+  },
+  link: {
+    flex: 1,
+    width: "100%",
   },
   youtubeIconTitleText: {
     fontSize: 20,
     fontWeight: "bold",
+    marginBottom: -3,
+    margin: 10,
   },
   youtubeTitle: {
-    marginVertical: 10,
+    flex: 1,
+    justifyContent: "center",
     textAlign: "center",
+    alignItems: "center",
   },
   youtubeTitleText: {
     fontSize: 20,
     fontWeight: "bold",
-    flexDirection: "row",
-    gap: 1,
+    borderStyle: "solid",
+    borderWidth: 2,
+    marginTop: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    borderColor: "#ccc",
   },
   youTubeIcon: {
     fontSize: 20,
@@ -181,16 +221,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   categoryTitle: {
-    backgroundColor: "red",
     width: "100%",
     height: 50,
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
   },
   categoryTitleText: {
-    fontSize: 20,
-    color: "white",
+    fontSize: 24,
+    color: "red",
     fontWeight: "bold",
   },
   youTubeImage: {

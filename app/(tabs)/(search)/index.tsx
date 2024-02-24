@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import usePostStore from "../../../store/PostStore";
+import usePostStore from "store/PostStore";
 
 export default function SearchScreen() {
   const [searchTerm, setSearchTerm] = useState<string>("");

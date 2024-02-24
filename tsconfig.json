@@ -2,6 +2,12 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "pretty": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["/*"]
+    }
   },
   "include": [
     "**/*.ts",

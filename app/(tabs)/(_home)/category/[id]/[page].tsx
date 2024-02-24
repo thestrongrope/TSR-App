@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import usePostStore from "../../../../../store/PostStore";
+import usePostStore from "store/PostStore";
 import { useEffect, useState } from "react";
 
 interface Post {
