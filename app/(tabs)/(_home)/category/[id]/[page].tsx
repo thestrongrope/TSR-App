@@ -1,5 +1,4 @@
 import { useLocalSearchParams, Link, Stack } from "expo-router";
-
 import {
   View,
   Text,
@@ -8,35 +7,33 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import usePostStore from "store/PostStore";
+import { Category, Post } from "types/types";
+import { getCategoriesFetcher, getPostsFetcher } from "store/DataService";
 import { useEffect, useState } from "react";
-
-interface Post {
-  id: number;
-  title: {
-    rendered: string;
-  };
-}
 
 export default function CategoryScreen() {
   const params = useLocalSearchParams<{ id: string; page: string }>();
   const { id, page } = params;
-  const [idVal, setIdVal] = useState<number>(parseInt(id, 10));
-  const [pg, setPg] = useState(parseInt(page, 10));
-
-  const {
-    getCategory,
-    getPosts,
-    loading,
-    currentCategory,
-    posts,
-    totalPages,
-    totalPosts,
-  } = usePostStore();
+  const idVal = parseInt(id, 10);
+  const pg = parseInt(page, 10);
+  const { getCategory } = getCategoriesFetcher();
+  const { getPostsByCategory } = getPostsFetcher();
+  const [currentCategory, setCurrentCategory] = useState<Category>();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalPosts, setTotalPosts] = useState(0);
 
   useEffect(() => {
-    getCategory(idVal);
-    getPosts(idVal, pg);
+    async function fetchData() {
+      setCurrentCategory(await getCategory(idVal));
+      const posts = await getPostsByCategory(idVal, pg);
+      setPosts(posts.data);
+      setTotalPages(posts.totalPages);
+      setTotalPosts(posts.totalRows);
+      setLoading(false);
+    }
+    fetchData();
   }, [idVal, pg]);
 
   if (currentCategory?.id != idVal)

@@ -9,13 +9,25 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
-import usePostStore from "store/PostStore";
+import HTML, { MixedStyleDeclaration } from "react-native-render-html";
+import { getPostsFetcher } from "store/DataService";
 
 export default function SearchScreen() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searching, setSearching] = useState<boolean>(false);
-  const { loading, posts, searchPosts } = usePostStore();
+  const [posts, setPosts] = useState<any[]>([]);
+  const { searchPosts } = getPostsFetcher();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const width = useWindowDimensions().width;
+  const titleTagsStyles: Readonly<Record<string, MixedStyleDeclaration>> = {
+    h1: {
+      fontSize: 30,
+      fontWeight: "bold",
+    },
+  };
 
   const handleInput = (text: string) => {
     setSearchTerm(text);
@@ -24,7 +36,8 @@ export default function SearchScreen() {
   const handleSearch = async () => {
     console.log(searchTerm);
     setSearching(true);
-    await searchPosts(searchTerm, 1);
+    const posts = await searchPosts(searchTerm, 1);
+    setPosts(posts.data);
     setSearching(false);
   };
 
@@ -53,7 +66,12 @@ export default function SearchScreen() {
                   href={`/searchpost/${post.id}`}
                   key={post.id}
                 >
-                <Text>{post.title.rendered}</Text>
+
+                <HTML
+                    source={{ html: post.title.rendered }}
+                    contentWidth={width}
+                    tagsStyles={titleTagsStyles}
+                  />
               </Link>
             </View>
           ))}

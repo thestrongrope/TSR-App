@@ -2,6 +2,7 @@ interface Category {
     id: number;
     name: string;
     count: number;
+    cached: boolean;
   };
   
   interface Post {
@@ -12,6 +13,7 @@ interface Category {
     content: {
       rendered: string;
     };
+    cached: boolean;
   };
   
   interface PostCache {

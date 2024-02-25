@@ -6,77 +6,34 @@ import {
   Linking,
   TouchableOpacity,
   ScrollView,
-  Platform,
-  useWindowDimensions,
-  requireNativeComponent,
 } from "react-native";
 
 import { CHANNEL_ID } from "constants/YouTube";
-import { Category, VideoItem, YouTubeApiResponseItem } from "types/types";
-import usePostStore from "store/PostStore";
-import { useEffect, useMemo, useState } from "react";
+import { Category, VideoItem, } from "types/types";
+import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import HTML, { MixedStyleDeclaration } from "react-native-render-html";
-import { YOUTUBEURL } from "constants/YouTube";
-
-async function GetYouTubeVideo(): Promise<VideoItem> {
-  console.log("Fetching videos from YouTube");
-  const response = await fetch(YOUTUBEURL);
-  if (response.status != 200) {
-    throw new Error(
-      `Failed to fetch videos from YouTube. URL: ${response.url}, Error: ${response.statusText}`
-    );
-  }
-  const data = await response.json();
-  if (!data.items) {
-    throw new Error(
-      `Failed to fetch videos from YouTube. URL: ${response.url}, Error: ${response.statusText}`
-    );
-  }
-
-  const item: YouTubeApiResponseItem = data.items[0];
-  return {
-    id: item.id.videoId,
-    title: item.snippet.title,
-    thumbnail: item.snippet.thumbnails.high.url,
-    description: item.snippet.description,
-  };
-}
+import { getCategoriesFetcher, getVideosFetcher } from "store/DataService";
 
 export default function HomeScreen() {
-  const { categories, getCategories } = usePostStore();
+  const [categories, setCategories] = useState<Category[]>([]);
   const [video, setVideo] = useState<VideoItem>();
   const [error, setError] = useState<string>();
-  const width = useWindowDimensions().width;
-
-  useMemo(() => {
-    async function getVideo() {
-      try {
-        if(video) return;
-        const v = await GetYouTubeVideo();
-        setVideo(v);
-      } catch (error: any) {
-        setError(error.message);
-      }
-    }
-    getVideo();
-  }, []);
+  const { getCategories } = getCategoriesFetcher();
+  const { getVideos } = getVideosFetcher();
 
   useEffect(() => {
-    getCategories();
+    async function fetchData() {
+      setCategories(await getCategories());
+      const videos = await getVideos();
+      setVideo(videos.data[0]);
+    }
+    fetchData();
   }, []);
 
   if (error) {
     console.log(error);
   }
-
-  const titleTagsStyles: Readonly<Record<string, MixedStyleDeclaration>> = {
-    h3: {
-      fontSize: 18,
-      fontWeight: "bold",
-    },
-  };
 
   return (
     <View style={styles.container}>
@@ -124,7 +81,7 @@ export default function HomeScreen() {
             <Text style={styles.categoryTitleText}>Categories</Text>
           </View>
           <View style={styles.card}>
-            {categories.map((category: Category) => (
+            {categories && categories.map((category: Category) => (
               <TouchableOpacity
                 key={category.id}
                 style={styles.link}

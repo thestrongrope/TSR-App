@@ -8,29 +8,37 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import usePostStore from "store/PostStore";
 import React, { useEffect } from "react";
 import HTML, { MixedStyleDeclaration } from "react-native-render-html";
+import { Post } from "types/types";
+import { getPostsFetcher } from "store/DataService";
 
 export default function DisplayPostComponent({ id }: { id: string }) {
-
-  const { loading, post, getPost } = usePostStore();
-
   const postId = parseInt(id, 10);
+  const { getPost } = getPostsFetcher();
+  const [post, setPost] = React.useState({} as Post);
+  const [loading, setLoading] = React.useState(true);
+
+  const width = useWindowDimensions().width;
 
   useEffect(() => {
-    getPost(postId);
+    async function fetchData() {
+      console.log("Fetching post: " + postId);
+      setPost(await getPost(postId));
+      setLoading(false);
+    }
+    fetchData();
   }, []);
 
-  const contentHtml = post.content.rendered;
-  const postTitle = `<h1>${post.title.rendered}</h1>`;
+  const contentHtml = post?.content?.rendered ?? "";
+  const postTitle = `<h1>${post?.title?.rendered ?? ""}</h1>`;
 
   const titleTagsStyles: Readonly<Record<string, MixedStyleDeclaration>> = {
     h1: {
       fontSize: 30,
       fontWeight: "bold",
     },
-  }
+  };
 
   const tagsStyles: Readonly<Record<string, MixedStyleDeclaration>> = {
     p: {
@@ -48,10 +56,6 @@ export default function DisplayPostComponent({ id }: { id: string }) {
     },
   };
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
   return (
     <View>
       <ScrollView>
@@ -61,25 +65,31 @@ export default function DisplayPostComponent({ id }: { id: string }) {
           }}
         />
 
-        <HTML
-            source={{ html: postTitle }}
-            contentWidth={useWindowDimensions().width}
-            tagsStyles={titleTagsStyles}
-          />
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : (
+          <>
+            <HTML
+              source={{ html: postTitle }}
+              contentWidth={width}
+              tagsStyles={titleTagsStyles}
+            />
 
-        {Platform.OS == "web" && (
-          <div
-            className="content"
-            dangerouslySetInnerHTML={{ __html: contentHtml }}
-          />
-        )}
-        {(Platform.OS == "android" || Platform.OS == "ios") && (
-          <HTML
-            source={{ html: contentHtml }}
-            contentWidth={useWindowDimensions().width}
-            tagsStyles={tagsStyles}
-            classesStyles={classesStyles}
-          />
+            {Platform.OS == "web" && (
+              <div
+                className="content"
+                dangerouslySetInnerHTML={{ __html: contentHtml }}
+              />
+            )}
+            {(Platform.OS == "android" || Platform.OS == "ios") && (
+              <HTML
+                source={{ html: contentHtml }}
+                contentWidth={width}
+                tagsStyles={tagsStyles}
+                classesStyles={classesStyles}
+              />
+            )}
+          </>
         )}
       </ScrollView>
     </View>
