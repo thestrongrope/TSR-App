@@ -10,6 +10,7 @@ import {
 import { Category, Post } from "types/types";
 import { getCategoriesFetcher, getPostsFetcher } from "store/DataService";
 import { useEffect, useState } from "react";
+import Loader from "components/Loader";
 
 export default function CategoryScreen() {
   const params = useLocalSearchParams<{ id: string; page: string }>();
@@ -44,12 +45,12 @@ export default function CategoryScreen() {
             title: "Loading Category...",
           }}
         />
-        <Text style={styles.title}>Loading...</Text>
+        <Loader />
       </ScrollView>
     );
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.contentContainer}>
       <Stack.Screen
         options={{
           title: currentCategory.name,
@@ -57,7 +58,7 @@ export default function CategoryScreen() {
       />
 
       {loading ? (
-        <Text style={styles.title}>Loading...</Text>
+        <Loader />
       ) : (
         <>
           <Text style={styles.title}>
@@ -78,21 +79,22 @@ export default function CategoryScreen() {
                   {post.title.rendered}
                 </Link>
               ))}
-
+          <View style={styles.paginationContainer}>
               {pg > 1 && (
-                <Link style={styles.button} href={`/category/${id}/${pg - 1}`}>
+                <Link style={[styles.button, styles.previousButton]} href={`/category/${id}/${pg - 1}`}>
                   <Pressable>
-                    <Text>Previous</Text>
+                    <Text style={styles.buttonText}>Previous</Text>
                   </Pressable>
                 </Link>
               )}
               {pg < totalPages && (
-                <Link style={styles.button} href={`/category/${id}/${pg + 1}`}>
+                <Link style={[styles.button, styles.nextButton]} href={`/category/${id}/${pg + 1}`}>
                   <TouchableOpacity>
-                    <Text>Next</Text>
+                    <Text style={styles.buttonText}>Next</Text>
                   </TouchableOpacity>
                 </Link>
               )}
+              </View>
             </>
           )}
         </>
@@ -120,13 +122,28 @@ const styles = StyleSheet.create({
     height: 1,
     width: "80%",
   },
+  contentContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 20,
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
   button: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginVertical: 10,
-    backgroundColor: "blue",
-    color: "white",
     padding: 10,
     borderRadius: 5,
+  },
+  previousButton: {
+    backgroundColor: 'red',
+    marginRight: 'auto',
+  },
+  nextButton: {
+    backgroundColor: 'red',
+    marginLeft: 'auto',
+  },
+  buttonText: {
+    color: 'white',
   },
 });
