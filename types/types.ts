@@ -1,77 +1,62 @@
 interface Category {
-    id: number;
-    name: string;
-    count: number;
-    cached: boolean;
+  id: number;
+  name: string;
+  count: number;
+  cached: boolean;
+}
+
+interface Post {
+  id: number;
+  title: {
+    rendered: string;
   };
-  
-  interface Post {
-    id: number;
-    title: {
-      rendered: string;
-    };
-    content: {
-      rendered: string;
-    };
-    cached: boolean;
+  content: {
+    rendered: string;
   };
-  
-  interface PostCache {
-    [categoryId: number]: {
-      [pageNo: number]: Post[];
-    };  
+  cached: boolean;
+}
+
+interface YouTubeApiResponseItem {
+  id: {
+    videoId: string;
   };
-  
-  type CachedCategory = {
-    [pageNo: number]: Post[];
-  };
-  
-  type CachedCategories = {
-    [categoryId: number]: CachedCategory;
-  };
-  
-  interface PostStore {
-    cache: PostCache;
-    categories: Category[];
-    currentCategory: Category;
-    posts: Post[];
-    currentPage: number;
-    totalPages: number;
-    totalPosts: number;
-    loading: boolean;
-    post: Post;
-    videos: VideoItem[];
-    videosLastFetchedAt: number;
-    getVideos: () => Promise<VideoItem[]>;
-    getCategory: (categoryId:number) => Promise<Category>;
-    getCategories: () => Promise<Category[]>;
-    getPosts: (categoryId:number, pageNo:number) => Promise<Post[]>;
-    searchPosts: (searchTerm:string, pageNo:number) => Promise<Post[]>;
-    getPost: (postId:number) => Promise<Post>;
-  };
-  
-  interface YouTubeApiResponseItem {
-    id: {
-      videoId: string;
-    };
-    snippet: {
-      publishedAt: string;
-      description: string;
-      title: string;
-      thumbnails: {
-        high: {
-          url: string;
-        };
+  snippet: {
+    publishedAt: string;
+    description: string;
+    title: string;
+    thumbnails: {
+      high: {
+        url: string;
       };
     };
   };
-  
-  interface VideoItem {
-    id: string;
-    title: string;
-    description: string;
-    thumbnail: string;
-  };
-  
-  // export the post Store and all the types
-export type { Category, Post, PostStore, YouTubeApiResponseItem, VideoItem };
+}
+
+interface VideoItem {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+}
+
+interface CacheEntry<T> {
+  data: T[];
+  totalPages: number;
+  totalRows: number;
+  expiration: number;
+}
+
+interface CacheItem<T> {
+  data: T;
+  expiration: number;
+}
+
+// export the post Store and all the types
+export type {
+  Category,
+  Post,
+  YouTubeApiResponseItem,
+  VideoItem,
+  CacheEntry,
+  CacheItem,
+};

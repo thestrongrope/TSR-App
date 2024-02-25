@@ -1,19 +1,7 @@
 import { Category, Post, VideoItem, YouTubeApiResponseItem } from "../types/types";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-interface CacheEntry<T> {
-  data: T[];
-  totalPages: number;
-  totalRows: number;
-  expiration: number;
-}
-
-interface CacheItem<T> {
-  data: T;
-  expiration: number;
-}
-
+import { CacheEntry, CacheItem } from "types/types";
 
 const getData = async <TIn, TOut>(url: string, resolver:(input: TIn[]) => TOut[] ): Promise<CacheEntry<TOut>> => {
   const cachedString = await AsyncStorage.getItem(url);
