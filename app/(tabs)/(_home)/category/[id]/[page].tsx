@@ -10,7 +10,7 @@ import {
 import { Category, Post } from "@/types/types";
 import { getCategoriesFetcher, getPostsFetcher } from "@/store/DataService";
 import { useEffect, useState } from "react";
-import Loader from "components/Loader";
+import Loader from "@/components/Loader";
 
 export default function CategoryScreen() {
   const params = useLocalSearchParams<{ id: string; page: string }>();
