@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "TSR",
-    "slug": "tsr",
+    "slug": "TSR",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tech.thestrongrope.TSR"
+      "package": "com.thestrongrope.TSR"
     },
     "web": {
       "bundler": "metro",
@@ -36,15 +36,6 @@
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "429ecd7d-9d37-468f-9c7c-efb50b481660"
-      }
-    },
-    "owner": "tech.thestrongrope"
+    }
   }
 }

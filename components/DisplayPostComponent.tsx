@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import React, { useEffect } from "react";
 import HTML, { MixedStyleDeclaration } from "react-native-render-html";
-import { Post } from "types/types";
-import { getPostsFetcher } from "store/DataService";
+import { Post } from "@/types/types";
+import { getPostsFetcher } from "@/store/DataService";
 
 export default function DisplayPostComponent({ id }: { id: string }) {
   const postId = parseInt(id, 10);

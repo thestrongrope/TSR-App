@@ -17,13 +17,17 @@ interface Post {
 }
 
 interface YouTubeApiResponseItem {
+  etag: string;
+  items: YouTubeApiResponseItemItem[];
+}
+
+interface YouTubeApiResponseItemItem {
   id: {
     videoId: string;
   };
   snippet: {
-    publishedAt: string;
-    description: string;
     title: string;
+    description: string;
     thumbnails: {
       high: {
         url: string;

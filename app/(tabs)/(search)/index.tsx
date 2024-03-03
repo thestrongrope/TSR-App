@@ -1,18 +1,16 @@
-import { Link, Stack } from "expo-router";
+import { Link, } from "expo-router";
 import { useState } from "react";
 import {
   Text,
   View,
   StyleSheet,
   TextInput,
-  Button,
-  Pressable,
   TouchableOpacity,
   ScrollView,
   useWindowDimensions,
 } from "react-native";
 import HTML, { MixedStyleDeclaration } from "react-native-render-html";
-import { getPostsFetcher } from "store/DataService";
+import { getPostsFetcher } from "@/store/DataService";
 
 export default function SearchScreen() {
   const [searchTerm, setSearchTerm] = useState<string>("");

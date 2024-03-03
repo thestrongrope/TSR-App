@@ -8,12 +8,12 @@ import {
   ScrollView,
 } from "react-native";
 
-import { CHANNEL_ID } from "constants/YouTube";
-import { Category, VideoItem, } from "types/types";
+import { CHANNEL_ID } from "@/constants/YouTube";
+import { Category, VideoItem, } from "@/types/types";
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { getCategoriesFetcher, getVideosFetcher } from "store/DataService";
+import { getCategoriesFetcher, getVideosFetcher } from "@/store/DataService";
 
 export default function HomeScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -25,8 +25,8 @@ export default function HomeScreen() {
   useEffect(() => {
     async function fetchData() {
       setCategories(await getCategories());
-      const videos = await getVideos();
-      setVideo(videos.data[0]);
+      const video = await getVideos();
+      setVideo(video.data);
     }
     fetchData();
   }, []);

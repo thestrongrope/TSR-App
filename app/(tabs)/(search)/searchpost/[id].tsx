@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
-import DisplayPostComponent from "components/DisplayPostComponent";
+import DisplayPostComponent from "@/components/DisplayPostComponent";
 
 export default function SearchPostScreen() {
-  const { id }: { id: string } = useLocalSearchParams();
-  return <DisplayPostComponent id={id} />;
+  const { id } = useLocalSearchParams();
+  return <DisplayPostComponent id={id as string} />;
 }

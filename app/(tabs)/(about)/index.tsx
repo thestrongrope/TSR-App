@@ -1,4 +1,3 @@
-import { Stack } from "expo-router";
 import { useState } from "react";
 import {
   Text,
@@ -7,9 +6,7 @@ import {
   Image,
   ScrollView,
   Modal,
-  Touchable,
   TouchableOpacity,
-  Pressable,
 } from "react-native";
 
 export default function AboutScreen() {
@@ -24,13 +21,13 @@ export default function AboutScreen() {
   const getModalImage = () => {
     switch(modalImage) {
       case "naba-en":
-        return require("assets/images/naba-en.jpg");
+        return require("@/assets/images/naba-en.jpg");
       case "naba-fa":
-        return require("assets/images/naba-fa.jpg");
+        return require("@/assets/images/naba-fa.jpg");
       case "mau-zeeshan":
-        return require("assets/images/mau-zeeshan.jpg");
+        return require("@/assets/images/mau-zeeshan.jpg");
       default:
-        return require("assets/images/naba-en.jpg");
+        return require("@/assets/images/naba-en.jpg");
     }
   };
 
@@ -72,14 +69,14 @@ export default function AboutScreen() {
           <Text style={styles.subTitle}>Naba Cultural Organization, Iran</Text>
           <TouchableOpacity onPress={() => showModalImage("naba-en")}>
             <Image
-              source={require("assets/images/naba-en.jpg")}
+              source={require("@/assets/images/naba-en.jpg")}
               style={styles.youTubeImage}
             />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => showModalImage("naba-fa")}>
           <Image
-            source={require("assets/images/naba-fa.jpg")}
+            source={require("@/assets/images/naba-fa.jpg")}
             style={styles.youTubeImage}
           />
           </TouchableOpacity>
@@ -87,7 +84,7 @@ export default function AboutScreen() {
           <Text style={styles.subTitle}>Maulana Sayed Zeeshan Haider Zaidi Sahab</Text>
           <TouchableOpacity onPress={() => showModalImage("mau-zeeshan")}>
           <Image
-            source={require("assets/images/mau-zeeshan.jpg")}
+            source={require("@/assets/images/mau-zeeshan.jpg")}
             style={styles.youTubeImage}
           />
           </TouchableOpacity>

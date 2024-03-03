@@ -1,13 +1,10 @@
-import { Stack } from 'expo-router';
 import { Text, View, StyleSheet } from 'react-native';
 
 export default function MenuScreen() {
     return (
-        <>
-        <View style={styles.container}>
-            <Text style={styles.title}>Search</Text>
-        </View>
-        </>
+      <View style={styles.container}>
+          <Text style={styles.title}>Search</Text>
+      </View>
     );
 }
 

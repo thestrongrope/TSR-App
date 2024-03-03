@@ -7,15 +7,15 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { Category, Post } from "types/types";
-import { getCategoriesFetcher, getPostsFetcher } from "store/DataService";
+import { Category, Post } from "@/types/types";
+import { getCategoriesFetcher, getPostsFetcher } from "@/store/DataService";
 import { useEffect, useState } from "react";
 
 export default function CategoryScreen() {
   const params = useLocalSearchParams<{ id: string; page: string }>();
   const { id, page } = params;
-  const idVal = parseInt(id, 10);
-  const pg = parseInt(page, 10);
+  const idVal = parseInt(id as string, 10);
+  const pg = parseInt(page as string, 10);
   const { getCategory } = getCategoriesFetcher();
   const { getPostsByCategory } = getPostsFetcher();
   const [currentCategory, setCurrentCategory] = useState<Category>();

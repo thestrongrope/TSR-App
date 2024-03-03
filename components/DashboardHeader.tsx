@@ -11,7 +11,7 @@ export default function DashboardHeader() {
           <View style={styles.logoContainer}>
             <Image
               style={styles.logo}
-              source={require("assets/images/logo-horizontal.png")}
+              source={require("@/assets/images/logo-horizontal.png")}
             />
           </View>
         </View>
