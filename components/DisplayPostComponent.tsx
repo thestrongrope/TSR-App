@@ -58,7 +58,7 @@ export default function DisplayPostComponent({ id }: { id: string }) {
 
   return (
     <View>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <Stack.Screen
           options={{
             title: "Read Article",
@@ -66,7 +66,7 @@ export default function DisplayPostComponent({ id }: { id: string }) {
         />
 
         {loading ? (
-          <Text>Loading...</Text>
+          <Loader />
         ) : (
           <>
             <HTML
@@ -126,5 +126,9 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     padding: 10,
     borderRadius: 5,
+  },
+  contentContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 20,
   },
 });
