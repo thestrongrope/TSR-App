@@ -12,7 +12,7 @@ import React, { useEffect } from "react";
 import HTML, { MixedStyleDeclaration } from "react-native-render-html";
 import { Post } from "@/types/types";
 import { getPostsFetcher } from "@/store/DataService";
-
+import Loader from './Loader';
 export default function DisplayPostComponent({ id }: { id: string }) {
   const postId = parseInt(id, 10);
   const { getPost } = getPostsFetcher();
