@@ -31,6 +31,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="(traditions)"
+        options={{
+          title: 'Traditions',
+          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="(about)"
         options={{
           title: 'About',
@@ -42,7 +49,7 @@ export default function TabLayout() {
         options={{
           title: 'Menu',
           tabBarItemStyle: { display: 'none' },
-          tabBarIcon: ({ color }) => <TabBarIcon name="bars" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="info" color={color} />,
         }}
       />
     </Tabs>
