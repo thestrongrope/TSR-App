@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { getCategoriesFetcher, getVideosFetcher } from "@/store/DataService";
+import Banner from "@/components/Banner";
 
 export default function HomeScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -38,6 +39,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <ScrollView style={{ width: "100%", flex: 1, padding: 10 }}>
+      <Banner />
         <View style={{ width: "100%" }}>
           {video && (
             <TouchableOpacity
@@ -199,4 +201,19 @@ const styles = StyleSheet.create({
     height: 1,
     width: "80%",
   },
+  banner: {
+    width: "100%",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: 'lightgray',
+    marginBottom:12,
+  },
+  bannerText: {
+    fontSize: 14,
+    color: "black",
+    fontWeight: "normal",
+    margin: 10,
+  }
 });
