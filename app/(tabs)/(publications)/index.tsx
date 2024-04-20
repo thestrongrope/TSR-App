@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet, TextInput, StatusBar } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; 
-import TraditionsTab from '@/app/(tabs)/(traditions)/body/TraditionsTab';
+import TraditionsTab from '@/app/(tabs)/(publications)/body/TraditionsTab';
 
 export default function TraditionsScreen() {
   const [searchText, setSearchText] = React.useState('');
