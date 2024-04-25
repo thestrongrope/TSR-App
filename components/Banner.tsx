@@ -2,15 +2,16 @@ import { StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native'
 import React from 'react';
 
 export default function Banner() {
-    const handlePress = () => {
-        Linking.openURL('https://www.youtube.com/@TheStrongRope');
-      };
+	const handlePress = () => {
+		Linking.openURL('https://www.youtube.com/@TheStrongRope');
+	};
 	return (
 		<View style={styles.banner}>
 			<Text style={styles.bannerText}>
-				The quiz will be telecast live from <TouchableOpacity onPress={handlePress}>
-      <Text style={{ color: 'blue' }}>our YouTube channel</Text>
-    </TouchableOpacity>on 19th Feb to 1st Mar 2024 at 9:30 PM IST
+				The quiz will be telecast live from{' '}
+				<TouchableOpacity onPress={handlePress}>
+					<Text style={{ color: 'blue' }}>our YouTube channel</Text>
+				</TouchableOpacity> on 19th Feb to 1st Mar 2024 at 9:30 PM IST
 			</Text>
 		</View>
 	);

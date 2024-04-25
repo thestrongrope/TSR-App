@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { getCategoriesFetcher, getVideosFetcher } from "@/store/DataService";
 import Banner from "@/components/Banner";
+import AuthHeader from "@/components/AuthHeader";
 
 export default function HomeScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -39,6 +40,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <ScrollView style={{ width: "100%", flex: 1, padding: 10 }}>
+        <AuthHeader />
       <Banner />
         <View style={{ width: "100%" }}>
           {video && (
