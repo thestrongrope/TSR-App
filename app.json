@@ -36,6 +36,15 @@
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "81c9cdd4-93c4-4aef-8971-2885ffe98c5f"
+      }
+    },
+    "owner": "thestrongrope"
   }
 }
